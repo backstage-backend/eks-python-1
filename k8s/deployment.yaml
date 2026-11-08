@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eks-python-1
+  namespace: default
+  labels:
+    app: eks-python-1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: eks-python-1
+  template:
+    metadata:
+      labels:
+        app: eks-python-1
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull
+      containers:
+        - name: eks-python-1
+          image: CONTAINER_IMAGE
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /api/v1/items
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
